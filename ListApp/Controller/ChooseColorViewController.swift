@@ -9,7 +9,7 @@ import UIKit
 
 class ChooseColorViewController: UIViewController {
 
-     var selectedColor: ((Int?) -> ())? = nil
+    private var selectedColor: ((Int?) -> ())? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,12 +72,6 @@ extension ChooseColorViewController: UICollectionViewDataSource{
         cell.layer.borderWidth = 1
         cell.layer.cornerRadius = 10
         return cell
-    }
-    
-    func test(ind: Int){
-        if let block = selectedColor {
-               block(ind)
-           }
     }
 }
 

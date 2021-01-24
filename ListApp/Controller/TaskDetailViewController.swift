@@ -20,7 +20,7 @@ class TaskDetailViewController: UIViewController {
     var  button : UIButton?
     var taskId : Int?
     var note: [Task]?
-    var selectedColorIndex = 0
+    var selectedColorIndex = 3
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,25 +33,25 @@ class TaskDetailViewController: UIViewController {
     
     private func setUpNavigationBar(){
         let doneButton   = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(clickDoneButton))
-    
         button = UIButton(type: .custom)
         button!.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
-        button!.backgroundColor = UIColor.red
         button!.addTarget(self, action: #selector(clickChooseColor), for: .touchUpInside)
         
         let item = UIBarButtonItem(customView: button!)
         navigationItem.rightBarButtonItems = [ doneButton,item]
+        
+        self.updateColor(index: selectedColorIndex)
     }
     
     @objc private func clickChooseColor(){
        let vc =  self.storyboard?.instantiateViewController(withIdentifier: "ChooseColorVC") as! ChooseColorViewController
         
-   //     vc.setColor(completion: updateColor)
-        vc.selectedColor = { (index) in
-        self.button?.backgroundColor = CustomColor.getColor(colorIndex: index!)
-        self.view.backgroundColor = CustomColor.getColor(colorIndex: index!)
-            self.selectedColorIndex = index!
-        }
+        vc.setColor(completion: updateColor)
+//        vc.selectedColor = { (index) in
+//        self.button?.backgroundColor = CustomColor.getColor(colorIndex: index!)
+//        self.view.backgroundColor = CustomColor.getColor(colorIndex: index!)
+//            self.selectedColorIndex = index!
+//        }
         self.present(vc, animated: true, completion: nil)
     }
     
@@ -61,6 +61,7 @@ class TaskDetailViewController: UIViewController {
     private func updateColor(index: Int?){
         button?.backgroundColor = CustomColor.getColor(colorIndex: index!)
         self.view.backgroundColor = CustomColor.getColor(colorIndex: index!)
+        self.selectedColorIndex = index!
     }
     
     /*-------------------------------------------------------------------------------------------*/
@@ -74,6 +75,8 @@ class TaskDetailViewController: UIViewController {
             let not = self.note![0]
             txtVw.text = not.taskdetail
             txtTitle.text = not.taskname
+            selectedColorIndex = Int(not.colorindex)
+            self.updateColor(index: selectedColorIndex)
         }
         catch{
             print("Error fetching the data")
@@ -94,6 +97,11 @@ class TaskDetailViewController: UIViewController {
     
     
     private func saveNewTask(){
+        
+        guard  (!txtTitle.text!.isEmpty) || !txtVw.text.isEmpty else {
+            print("Empty data. Not saved.")
+            return}
+
         
         let taskObj = Task(context: context)
         let uniqueNumber = Int(arc4random_uniform(30000))
@@ -121,7 +129,7 @@ class TaskDetailViewController: UIViewController {
         not.taskdetail = txtVw.text
         not.taskname = txtTitle.text
         not.updatedat = NSDate() as Date
-
+        not.colorindex = Int64(selectedColorIndex)
         }
         catch{
             print("Error found in upading the task")
@@ -130,28 +138,3 @@ class TaskDetailViewController: UIViewController {
    
 }
 
-/*-------------------------------------------------------------------------------------------*/
-
-extension TaskDetailViewController: UITextViewDelegate{
-    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText newText: String) -> Bool {
- 
-        if (textView.text.count > 0){
-            navigationItem.rightBarButtonItem?.isEnabled = true
-        }else{
-            navigationItem.rightBarButtonItem?.isEnabled = false
-        }
-            return true
-    }
-}
-/*-------------------------------------------------------------------------------------------*/
-extension TaskDetailViewController: UITextFieldDelegate{
-     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool{
-        
-        if (textField.text!.count > 0){
-            navigationItem.rightBarButtonItem?.isEnabled = true
-        }else{
-            navigationItem.rightBarButtonItem?.isEnabled = false
-        }
-        return true
-    }
-}

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TaskCustomCell: UICollectionViewCell {
+class TaskCustomCell: UITableViewCell {
     
     @IBOutlet var tasktext: UILabel!
     @IBOutlet var createdAt: UILabel!

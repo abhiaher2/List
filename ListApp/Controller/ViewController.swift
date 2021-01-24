@@ -10,7 +10,7 @@ import UIKit
 final class ViewController: UIViewController {
     
     
-    @IBOutlet weak var vwCollection: UICollectionView!
+    @IBOutlet weak var tblTask: UITableView!
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var notes = [Task]()
     
@@ -22,6 +22,8 @@ final class ViewController: UIViewController {
             self.fetchData()
         
     }
+    
+    
     
     @objc func addNewTask(){
         
@@ -43,7 +45,9 @@ final class ViewController: UIViewController {
     final func fetchData(){
         do{
             self.notes = try context.fetch(Task.fetchRequest())
-            vwCollection.reloadData()
+            self.notes = self.notes.sorted(by: {$0.updatedat!.compare($1.updatedat!) == .orderedDescending})
+             
+            tblTask.reloadData()
         }
         catch{
           print("Error fetching the data")
@@ -85,23 +89,24 @@ extension ViewController: UITableViewDelegate{
     }
 }
 
-extension ViewController : UICollectionViewDataSource{
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+extension ViewController : UITableViewDataSource{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.notes.count
+
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell{
-        
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let task = self.notes[indexPath.row]
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! TaskCustomCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! TaskCustomCell
         cell.tasktext.text = task.taskname
         cell.taskDetail.text = task.taskdetail
         cell.createdAt.text = "Created at:\(self.getDateInString(date: task.createdat!))"
         cell.UpdatedAt.text = "Updated at: \(self.getDateInString(date:task.updatedat!))"
         cell.backgroundColor = CustomColor.getColor(colorIndex: Int(task.colorindex))
         return cell
+
     }
-    
+
     private func getDateInString(date: Date) -> String{
         let formatter = DateFormatter()
         formatter.dateFormat = "d MMM y, HH:mm"
@@ -112,13 +117,3 @@ extension ViewController : UICollectionViewDataSource{
     
     
 }
-
-extension ViewController: UICollectionViewDelegateFlowLayout {
-
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 100, height: 100)
-    }
-}
-

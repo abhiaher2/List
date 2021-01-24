@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="eKm-HS-Oyh">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="j7R-UF-FZr">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
@@ -12,7 +12,7 @@
         <!--Task-->
         <scene sceneID="wCq-lL-acq">
             <objects>
-                <viewController id="omm-0X-edq" customClass="ViewController" customModule="WeatherApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="omm-0X-edq" customClass="ViewController" customModule="ListApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="p5J-V0-gEQ">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -28,7 +28,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Cell" id="80x-hM-Nvd" customClass="TaskCustomCell" customModule="WeatherApp" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Cell" id="80x-hM-Nvd">
                                         <rect key="frame" x="0.0" y="0.0" width="146" height="108"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="VXB-Bu-dY5">
@@ -73,46 +73,32 @@
                                         </collectionViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <size key="customSize" width="146" height="108"/>
-                                        <connections>
-                                            <outlet property="UpdatedAt" destination="967-3n-iJy" id="a0l-GP-ua8"/>
-                                            <outlet property="createdAt" destination="EG4-de-x4h" id="kLM-H0-vmH"/>
-                                            <outlet property="taskDetail" destination="Sm8-Xu-Mhf" id="b0d-EJ-6fp"/>
-                                            <outlet property="tasktext" destination="6GE-7I-EjJ" id="5TJ-Ta-hR5"/>
-                                        </connections>
                                     </collectionViewCell>
                                 </cells>
-                                <connections>
-                                    <outlet property="dataSource" destination="omm-0X-edq" id="jjV-Hz-o6h"/>
-                                    <outlet property="delegate" destination="omm-0X-edq" id="qlW-Lq-y8D"/>
-                                </connections>
                             </collectionView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="jal-l9-5ZP"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
                     <navigationItem key="navigationItem" title="Task" largeTitleDisplayMode="always" id="BID-Ez-Oc0"/>
-                    <connections>
-                        <outlet property="vwCollection" destination="1iJ-TU-NHw" id="Y9a-R9-mjB"/>
-                        <segue destination="bw9-Ym-O13" kind="show" id="EkM-U6-kdz"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jDe-J5-YMs" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1339.1304347826087" y="-379.01785714285711"/>
         </scene>
-        <!--View Controller-->
+        <!--List-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="ListApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" springLoaded="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Q2u-Oj-BJx">
-                                <rect key="frame" x="0.0" y="44" width="414" height="818"/>
+                                <rect key="frame" x="0.0" y="88" width="414" height="774"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" id="PBx-e1-ahO" customClass="TaskCustomCell" customModule="WeatherApp" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" id="PBx-e1-ahO" customClass="TaskCustomCell" customModule="ListApp" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="414" height="108"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="PBx-e1-ahO" id="uZ5-eH-KEW">
@@ -161,8 +147,18 @@
                                                 <constraint firstItem="R5c-48-mPH" firstAttribute="leading" secondItem="uZ5-eH-KEW" secondAttribute="leading" constant="8" id="yPc-8b-cao"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="UpdatedAt" destination="pSt-kk-gK5" id="H5l-1v-bn2"/>
+                                            <outlet property="createdAt" destination="0Yd-gS-zUi" id="KnT-7d-LgY"/>
+                                            <outlet property="taskDetail" destination="SS5-kF-S9J" id="pVc-a8-R5h"/>
+                                            <outlet property="tasktext" destination="8yE-Ka-ATt" id="VVr-Nr-zbg"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="hCT-X2-h0g"/>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="ycn-Wh-MbP"/>
+                                </connections>
                             </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -174,16 +170,20 @@
                             <constraint firstItem="Q2u-Oj-BJx" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="wbI-jn-5UY"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="p3J-uR-1nX"/>
+                    <navigationItem key="navigationItem" title="List" id="p3J-uR-1nX"/>
+                    <connections>
+                        <outlet property="tblTask" destination="Q2u-Oj-BJx" id="pmK-tL-fyX"/>
+                        <segue destination="bw9-Ym-O13" kind="show" id="tbO-KS-YBh"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1406" y="307"/>
+            <point key="canvasLocation" x="2315.9420289855075" y="306.69642857142856"/>
         </scene>
         <!--Task Details-->
         <scene sceneID="OwD-nZ-Tsy">
             <objects>
-                <viewController storyboardIdentifier="AddTaskDetail" id="bw9-Ym-O13" customClass="TaskDetailViewController" customModule="WeatherApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AddTaskDetail" id="bw9-Ym-O13" customClass="TaskDetailViewController" customModule="ListApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="3CD-s8-1Ha">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -193,11 +193,8 @@
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Please enter task title here" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="msf-0w-Ipg">
                                         <rect key="frame" x="0.0" y="0.0" width="398" height="34"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                                         <textInputTraits key="textInputTraits"/>
-                                        <connections>
-                                            <outlet property="delegate" destination="bw9-Ym-O13" id="bCO-J2-K25"/>
-                                        </connections>
                                     </textField>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="tSU-FL-IUZ">
                                         <rect key="frame" x="0.0" y="39" width="398" height="315"/>
@@ -205,9 +202,6 @@
                                         <color key="textColor" systemColor="labelColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                        <connections>
-                                            <outlet property="delegate" destination="bw9-Ym-O13" id="W2s-j9-R4o"/>
-                                        </connections>
                                     </textView>
                                 </subviews>
                                 <constraints>
@@ -231,19 +225,18 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mCy-zx-kgP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2366.666666666667" y="71.651785714285708"/>
+            <point key="canvasLocation" x="3276.811594202899" y="71.651785714285708"/>
         </scene>
         <!--Choose Color View Controller-->
         <scene sceneID="0BX-ih-b0t">
             <objects>
-                <viewController storyboardIdentifier="ChooseColorVC" id="dmt-fJ-Rac" customClass="ChooseColorViewController" customModule="WeatherApp" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="nhU-w2-bbn">
+                <viewController storyboardIdentifier="ChooseColorVC" id="dmt-fJ-Rac" customClass="ChooseColorViewController" customModule="ListApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" alpha="0.94999999999999996" contentMode="scaleToFill" id="nhU-w2-bbn">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Hia-In-AW4">
-                                <rect key="frame" x="20" y="44" width="374" height="802"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Hia-In-AW4">
+                                <rect key="frame" x="20" y="60" width="374" height="786"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="gsN-L7-nhU">
                                     <size key="itemSize" width="128" height="128"/>
@@ -269,6 +262,12 @@
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="7hs-CJ-K86"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="7hs-CJ-K86" firstAttribute="trailing" secondItem="Hia-In-AW4" secondAttribute="trailing" constant="20" id="57d-fF-rBh"/>
+                            <constraint firstItem="Hia-In-AW4" firstAttribute="leading" secondItem="7hs-CJ-K86" secondAttribute="leading" constant="20" id="H01-zQ-wxe"/>
+                            <constraint firstItem="7hs-CJ-K86" firstAttribute="bottom" secondItem="Hia-In-AW4" secondAttribute="bottom" constant="16" id="jqW-6S-HPQ"/>
+                            <constraint firstItem="Hia-In-AW4" firstAttribute="top" secondItem="7hs-CJ-K86" secondAttribute="top" constant="16" id="rPe-yE-Aon"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="S9G-bx-yxn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -278,7 +277,7 @@
         <!--Add Task View Controller-->
         <scene sceneID="kSU-x7-psn">
             <objects>
-                <viewController storyboardIdentifier="AddTask" id="3kx-qA-V1H" customClass="AddTaskViewController" customModule="WeatherApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AddTask" id="3kx-qA-V1H" customClass="AddTaskViewController" customModule="ListApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="AFP-w9-lfO">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -364,22 +363,22 @@
             <point key="canvasLocation" x="-23.188405797101453" y="714.50892857142856"/>
         </scene>
         <!--Navigation Controller-->
-        <scene sceneID="rpA-y9-sfS">
+        <scene sceneID="hPT-2G-iVo">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="eKm-HS-Oyh" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="j7R-UF-FZr" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="BeH-i9-01B">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="B8a-bs-AsZ">
                         <rect key="frame" x="0.0" y="44" width="414" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="omm-0X-edq" kind="relationship" relationship="rootViewController" id="4iq-cb-LPb"/>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="M7S-GI-X7m"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="ZF9-b4-FlP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="7lF-OY-W9S" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="428.98550724637687" y="-379.01785714285711"/>
+            <point key="canvasLocation" x="1405.7971014492755" y="306.69642857142856"/>
         </scene>
     </scenes>
     <resources>
