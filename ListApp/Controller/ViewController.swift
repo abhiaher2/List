@@ -47,7 +47,13 @@ final class ViewController: UIViewController {
     final func fetchData(){
         do{
             
-            self.notes = try context.fetch(Task.fetchRequest())
+            let tempNotes = try context.fetch(Task.fetchRequest()) as [Task]
+            
+            self.pinnedNotes = tempNotes.filter{$0.ispinned}
+            self.notes = tempNotes.filter{!$0.ispinned}
+            
+            self.pinnedNotes = self.pinnedNotes.sorted(by: {$0.updatedat!.compare($1.updatedat!) == .orderedDescending})
+            
             self.notes = self.notes.sorted(by: {$0.updatedat!.compare($1.updatedat!) == .orderedDescending})
             
             tblTask.reloadData()
@@ -61,16 +67,47 @@ final class ViewController: UIViewController {
 extension ViewController: UITableViewDelegate{
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        let tempNotes : [Task]
+        if (self.pinnedNotes.count > 0)
+        {
+            switch indexPath.section {
+            case 1:
+                tempNotes = self.notes
+            default:
+                tempNotes = self.pinnedNotes
+
+            }
+        }
+            else{
+                tempNotes = self.notes
+
+            }
         let taskDetailVC = self.storyboard?.instantiateViewController(identifier: "AddTaskDetail") as! TaskDetailViewController
-        let task = notes[indexPath.row]
+        let task = tempNotes[indexPath.row]
         taskDetailVC.taskId = Int(task.taskid)
         self.navigationController?.pushViewController(taskDetailVC, animated: true)
     }
     
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
-        let task = self.notes[indexPath.row]
+        
+        let tempNotes : [Task]
+        if (self.pinnedNotes.count > 0)
+        {
+            switch indexPath.section {
+            case 1:
+                tempNotes = self.notes
+            default:
+                tempNotes = self.pinnedNotes
+
+            }
+        }
+            else{
+                tempNotes = self.notes
+
+            }
+        
+        let task = tempNotes[indexPath.row]
         
         let closeAction = UIContextualAction(style: .normal, title:  "Pin", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
             
@@ -78,20 +115,26 @@ extension ViewController: UITableViewDelegate{
                 print("OK, marked as unpinned")
                 task.ispinned = false
                 self.pinnedCount -= 1
-                self.notes.append(task)
-                self.pinnedNotes.remove(at: indexPath.row)
-                //self.moveTableViewCell(indexPath: indexPath)
+//                self.notes.append(task)
+//                self.pinnedNotes.remove(at: indexPath.row)
+               // self.moveTableViewCell(indexPath: indexPath)
                 
             }
             else{
                 print("OK, marked as pinned")
                 task.ispinned = true
-                self.moveTableViewCell(indexPath: indexPath)
+              //  self.moveTableViewCell(indexPath: indexPath)
                 self.pinnedCount += 1
-                self.notes.remove(at: indexPath.row)
-                self.pinnedNotes.append(task)
             }
+            do{
+                try self.context.save()
+            }
+            catch{
+                print("Error in storing the task")
+            }
+            
             success(true)
+            self.fetchData()
         })
         
         if (task.ispinned){
@@ -100,7 +143,6 @@ extension ViewController: UITableViewDelegate{
         }
         else{
             closeAction.image = UIImage(systemName: "pin")
-            
         }
         closeAction.backgroundColor = UIColor.systemGreen
         return UISwipeActionsConfiguration(actions: [closeAction])
@@ -113,9 +155,26 @@ extension ViewController: UITableViewDelegate{
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath)
     {
+        let tempNotes : [Task]
+        if (self.pinnedNotes.count > 0)
+        {
+            switch indexPath.section {
+            case 1:
+                tempNotes = self.notes
+            default:
+                tempNotes = self.pinnedNotes
+
+            }
+        }
+            else{
+                tempNotes = self.notes
+
+            }
+        
+        
         if editingStyle == .delete {
             
-            let notesObj = notes[indexPath.row]
+            let notesObj = tempNotes[indexPath.row]
             
             context.delete(notesObj)
             
@@ -128,21 +187,19 @@ extension ViewController: UITableViewDelegate{
             self.notes.removeAll()
             fetchData()
             
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
         }
     }
 }
 
 extension ViewController : UITableViewDataSource{
     func numberOfSections(in tableView: UITableView) -> Int {
-        if (pinnedCount > 0) { return 2 }
+        if (self.pinnedNotes.count > 0) { return 2 }
         return 1
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         let sectionName: String
-        if (pinnedCount > 0)
+        if (self.pinnedNotes.count > 0)
         {
             switch section {
             case 1:
@@ -161,7 +218,7 @@ extension ViewController : UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         let rowsCount: Int
-        if (pinnedCount > 0)
+        if (self.pinnedNotes.count > 0)
         {
             switch section {
             case 1:
@@ -179,7 +236,7 @@ extension ViewController : UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let tempNotes : [Task]
-        if (pinnedCount > 0)
+        if (self.pinnedNotes.count > 0)
         {
             switch indexPath.section {
             case 1:
@@ -198,8 +255,8 @@ extension ViewController : UITableViewDataSource{
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! TaskCustomCell
         cell.tasktext.text = task.taskname
         cell.taskDetail.text = task.taskdetail
-        cell.createdAt.text = "Created at:\(self.getDateInString(date: task.createdat!))"
-        cell.UpdatedAt.text = "Updated at: \(self.getDateInString(date:task.updatedat!))"
+//        cell.createdAt.text = "Created at:\(self.getDateInString(date: task.createdat!))"
+        cell.UpdatedAt.text = " \(self.getDateInString(date:task.updatedat!))"
         cell.backgroundColor = CustomColor.getColor(colorIndex: Int(task.colorindex))
         return cell
         
