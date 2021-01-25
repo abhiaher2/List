@@ -3,12 +3,13 @@
     <entity name="Task" representedClassName="Task" syncable="YES">
         <attribute name="colorindex" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="createdat" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="ispinned" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="taskdetail" optional="YES" attributeType="String"/>
         <attribute name="taskid" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="taskname" optional="YES" attributeType="String"/>
         <attribute name="updatedat" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
     <elements>
-        <element name="Task" positionX="-63" positionY="-18" width="128" height="133"/>
+        <element name="Task" positionX="-63" positionY="-18" width="128" height="148"/>
     </elements>
 </model>

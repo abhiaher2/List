@@ -1,8 +1,8 @@
 //
 //  Task+CoreDataProperties.swift
-//  WeatherApp
+//  ListApp
 //
-//  Created by Abhijeet Aher on 1/23/21.
+//  Created by Abhijeet Aher on 1/24/21.
 //
 //
 
@@ -16,12 +16,13 @@ extension Task {
         return NSFetchRequest<Task>(entityName: "Task")
     }
 
+    @NSManaged public var colorindex: Int64
     @NSManaged public var createdat: Date?
     @NSManaged public var taskdetail: String?
     @NSManaged public var taskid: Int64
     @NSManaged public var taskname: String?
     @NSManaged public var updatedat: Date?
-    @NSManaged public var colorindex: Int64
+    @NSManaged public var ispinned: Bool
 
 }
 

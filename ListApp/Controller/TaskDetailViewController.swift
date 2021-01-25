@@ -25,6 +25,8 @@ class TaskDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        txtTitle.becomeFirstResponder()
+        
         self.setUpNavigationBar()
 
         guard self.taskId != nil else {return}
@@ -111,6 +113,7 @@ class TaskDetailViewController: UIViewController {
         taskObj.createdat = NSDate() as Date
         taskObj.updatedat = NSDate() as Date
         taskObj.colorindex = Int64(selectedColorIndex)
+        taskObj.ispinned = false
         do{
             try self.context.save()
         }
