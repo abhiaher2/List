@@ -7,83 +7,113 @@
 
 import UIKit
 
+enum noteType{
+    case Note
+    case PinnedNote
+}
+
 final class ViewController: UIViewController {
     
     var pinnedCount = 0
     
-    @IBOutlet weak var tblTask: UITableView!
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    var notes = [Task]()
-    var pinnedNotes = [Task]()
+    var resultSearchController = UISearchController()
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        title = "Notes"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewTask))
-        
-        self.fetchData()
-        
-    }
+    @IBOutlet weak var tblTask: UITableView!
     
-    
-    
-    @objc func addNewTask(){
-        
-        let taskDetailVC = self.storyboard?.instantiateViewController(identifier: "AddTaskDetail") as! TaskDetailViewController
-        self.navigationController?.pushViewController(taskDetailVC, animated: true)
-        
-        //      let addTaskVC = self.storyboard?.instantiateViewController(identifier: "AddTask") as! AddTaskViewController
-        //
-        //        addTaskVC.callPrev1(completionHandler: fetchData)
-        //        self.present(addTaskVC, animated: true, completion: nil)
-    }
-    
+    var filteredNotes = [Task]()
+    var dictNotes = [noteType: [Task]]()
+
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         self.fetchData()
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        title = "Notes"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewTask))
+        
+        self.getSearchBar()
+    }
+    
+    
+    @objc func addNewTask(){
+        
+        let taskDetailVC = self.storyboard?.instantiateViewController(identifier: "AddTaskDetail") as! TaskDetailViewController
+        self.navigationController?.pushViewController(taskDetailVC, animated: true)
+    }
+    
+    
+    func getSearchBar(){
+      resultSearchController = ({
+               let controller = UISearchController(searchResultsController: nil)
+               controller.searchResultsUpdater = self
+               controller.dimsBackgroundDuringPresentation = false
+               controller.searchBar.sizeToFit()
+
+               tblTask.tableHeaderView = controller.searchBar
+
+               return controller
+           })()
+        
+    }
+    
+ 
     final func fetchData(){
         do{
             
-            let tempNotes = try context.fetch(Task.fetchRequest()) as [Task]
+            let tempNotes = try AppManager.context.fetch(Task.fetchRequest()) as [Task]
             
-            self.pinnedNotes = tempNotes.filter{$0.ispinned}
-            self.notes = tempNotes.filter{!$0.ispinned}
+            self.dictNotes[noteType.Note] = tempNotes.filter{!$0.ispinned}.sorted(by: {$0.updatedat!.compare($1.updatedat!) == .orderedDescending})
             
-            self.pinnedNotes = self.pinnedNotes.sorted(by: {$0.updatedat!.compare($1.updatedat!) == .orderedDescending})
-            
-            self.notes = self.notes.sorted(by: {$0.updatedat!.compare($1.updatedat!) == .orderedDescending})
-            
+            self.dictNotes[noteType.PinnedNote] = tempNotes.filter{$0.ispinned}.sorted(by: {$0.updatedat!.compare($1.updatedat!) == .orderedDescending})
+
             tblTask.reloadData()
         }
         catch{
             print("Error fetching the data")
         }
     }
+    
+    func getDataSource(index: Int) -> [Task]?
+    {
+        let tempNotes : [Task]?
+        
+        if (resultSearchController.isActive) {
+            
+            return self.filteredNotes
+          }
+        
+        guard let pinnedNotesCount = self.dictNotes[noteType.PinnedNote]?.count else {
+            
+            tempNotes = self.dictNotes[noteType.Note] ?? nil
+            return tempNotes
+
+        }
+            switch index {
+            case 1:
+                tempNotes = self.dictNotes[noteType.Note]
+            default:
+                tempNotes = self.dictNotes[noteType.PinnedNote]
+            }
+            return tempNotes
+    }
+    
+    
+
+    
+    
 }
 
 extension ViewController: UITableViewDelegate{
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let tempNotes : [Task]
-        if (self.pinnedNotes.count > 0)
-        {
-            switch indexPath.section {
-            case 1:
-                tempNotes = self.notes
-            default:
-                tempNotes = self.pinnedNotes
+       
 
-            }
-        }
-            else{
-                tempNotes = self.notes
-
-            }
         let taskDetailVC = self.storyboard?.instantiateViewController(identifier: "AddTaskDetail") as! TaskDetailViewController
-        let task = tempNotes[indexPath.row]
+        let task = self.getDataSource(index: indexPath.section)![indexPath.row]
         taskDetailVC.taskId = Int(task.taskid)
         self.navigationController?.pushViewController(taskDetailVC, animated: true)
     }
@@ -91,23 +121,8 @@ extension ViewController: UITableViewDelegate{
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
         
-        let tempNotes : [Task]
-        if (self.pinnedNotes.count > 0)
-        {
-            switch indexPath.section {
-            case 1:
-                tempNotes = self.notes
-            default:
-                tempNotes = self.pinnedNotes
-
-            }
-        }
-            else{
-                tempNotes = self.notes
-
-            }
         
-        let task = tempNotes[indexPath.row]
+        let task = self.getDataSource(index: indexPath.section)![indexPath.row]
         
         let closeAction = UIContextualAction(style: .normal, title:  "Pin", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
             
@@ -115,10 +130,6 @@ extension ViewController: UITableViewDelegate{
                 print("OK, marked as unpinned")
                 task.ispinned = false
                 self.pinnedCount -= 1
-//                self.notes.append(task)
-//                self.pinnedNotes.remove(at: indexPath.row)
-               // self.moveTableViewCell(indexPath: indexPath)
-                
             }
             else{
                 print("OK, marked as pinned")
@@ -127,12 +138,11 @@ extension ViewController: UITableViewDelegate{
                 self.pinnedCount += 1
             }
             do{
-                try self.context.save()
+                try AppManager.context.save()
             }
             catch{
                 print("Error in storing the task")
             }
-            
             success(true)
             self.fetchData()
         })
@@ -155,108 +165,91 @@ extension ViewController: UITableViewDelegate{
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath)
     {
-        let tempNotes : [Task]
-        if (self.pinnedNotes.count > 0)
-        {
-            switch indexPath.section {
-            case 1:
-                tempNotes = self.notes
-            default:
-                tempNotes = self.pinnedNotes
-
-            }
-        }
-            else{
-                tempNotes = self.notes
-
-            }
-        
-        
+       
         if editingStyle == .delete {
             
-            let notesObj = tempNotes[indexPath.row]
-            
-            context.delete(notesObj)
-            
+            let notesObj = self.getDataSource(index: indexPath.section)![indexPath.row]
+            AppManager.context.delete(notesObj)
             do{
-                try self.context.save()
+                try AppManager.context.save()
             }
             catch{
                 print("Error in storing the task")
             }
-            self.notes.removeAll()
+            self.dictNotes.removeAll()
             fetchData()
             
         }
     }
 }
 
+// Mark: Search result
+extension ViewController: UISearchResultsUpdating{
+    func updateSearchResults(for searchController: UISearchController) {
+        self.filteredNotes.removeAll(keepingCapacity: true)
+        var tmpFilteredNotes = [Task]()
+
+        for value in self.dictNotes.values{
+            tmpFilteredNotes = value.filter{($0.taskname?.lowercased().contains(searchController.searchBar.text!.lowercased()))!}
+            self.filteredNotes.append(contentsOf: tmpFilteredNotes)
+        }
+        tblTask.reloadData()
+    }
+}
+
+
+
 extension ViewController : UITableViewDataSource{
     func numberOfSections(in tableView: UITableView) -> Int {
-        if (self.pinnedNotes.count > 0) { return 2 }
-        return 1
+        
+        if (resultSearchController.isActive) {
+            return 1
+        }
+        
+        guard let pinnedNotesCount = self.dictNotes[noteType.PinnedNote]?.count else {return 1}
+        return 2
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         let sectionName: String
-        if (self.pinnedNotes.count > 0)
+        
+        if (resultSearchController.isActive) {
+            sectionName = ""
+            return sectionName
+
+        }
+        
+        guard let pinnedNotesCount = self.dictNotes[noteType.PinnedNote]?.count else
         {
+            sectionName = "Recent"
+            return sectionName
+        }
             switch section {
             case 1:
                 sectionName = "Recent"
             default:
                 sectionName = "Pinned"
             }
-        }
-        else{
-            sectionName = "Recent"
-        }
         return sectionName
     }
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        let rowsCount: Int
-        if (self.pinnedNotes.count > 0)
-        {
-            switch section {
-            case 1:
-                rowsCount = self.notes.count
-            default:
-                rowsCount = self.pinnedNotes.count
-            }
+        guard let task =  self.getDataSource(index: section) else {
+            return 0
         }
-        else{
-            rowsCount =  self.notes.count
-        }
-        return rowsCount
-        
+        return task.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let tempNotes : [Task]
-        if (self.pinnedNotes.count > 0)
-        {
-            switch indexPath.section {
-            case 1:
-                tempNotes = self.notes
-            default:
-                tempNotes = self.pinnedNotes
 
-            }
-        }
-            else{
-                tempNotes = self.notes
-
-            }
         
-        let task = tempNotes[indexPath.row]
+        let task = self.getDataSource(index: indexPath.section)![indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! TaskCustomCell
         cell.tasktext.text = task.taskname
         cell.taskDetail.text = task.taskdetail
-//        cell.createdAt.text = "Created at:\(self.getDateInString(date: task.createdat!))"
-        cell.UpdatedAt.text = " \(self.getDateInString(date:task.updatedat!))"
+        cell.UpdatedAt.text = "\(self.getDateInString(date:task.updatedat!))"
         cell.backgroundColor = CustomColor.getColor(colorIndex: Int(task.colorindex))
         return cell
         
@@ -266,9 +259,5 @@ extension ViewController : UITableViewDataSource{
         let formatter = DateFormatter()
         formatter.dateFormat = "d MMM y, HH:mm"
         return formatter.string(from: date)
-        
-        
     }
-    
-    
 }

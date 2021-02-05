@@ -17,6 +17,8 @@ class TaskDetailViewController: UIViewController {
     
     @IBOutlet weak var txtVw: UITextView!
     @IBOutlet weak var txtTitle: UITextField!
+    
+    
     var  button : UIButton?
     var taskId : Int?
     var note: [Task]?
@@ -27,10 +29,27 @@ class TaskDetailViewController: UIViewController {
 
         txtTitle.becomeFirstResponder()
         
+        self.addTabBarAboveKayboard()
+        
         self.setUpNavigationBar()
 
         guard self.taskId != nil else {return}
         self.getTask()
+    }
+    
+    
+    final func addTabBarAboveKayboard(){
+        let bar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 30))
+        bar.barStyle = .default
+        let reset = UIBarButtonItem(title: "Reset", style: .plain, target: self, action: #selector(resetTapped))
+        bar.items = [reset]
+        bar.sizeToFit()
+        txtVw.inputAccessoryView = bar
+
+    }
+    
+    @objc func resetTapped(){
+        
     }
     
     private func setUpNavigationBar(){
@@ -73,7 +92,7 @@ class TaskDetailViewController: UIViewController {
             let request = Task.fetchRequest() as NSFetchRequest<Task>
             let predicate = NSPredicate(format:"taskid = %d", self.taskId!)
             request.predicate = predicate
-            self.note = try context.fetch(request)
+            self.note = try AppManager.context.fetch(request)
             let not = self.note![0]
             txtVw.text = not.taskdetail
             txtTitle.text = not.taskname
