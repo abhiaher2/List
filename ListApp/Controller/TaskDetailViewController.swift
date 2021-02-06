@@ -10,7 +10,8 @@ import CoreData
 
 class TaskDetailViewController: UIViewController {
    
-   // private var saveData : (() -> Void)? = nil
+    @IBOutlet weak var heightConstraintsTxtVw: NSLayoutConstraint!
+    // private var saveData : (() -> Void)? = nil
 
     
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -18,37 +19,101 @@ class TaskDetailViewController: UIViewController {
     @IBOutlet weak var txtVw: UITextView!
     @IBOutlet weak var txtTitle: UITextField!
     
+    let tskTextView = TaskTextView()
     
     var  button : UIButton?
     var taskId : Int?
     var note: [Task]?
     var selectedColorIndex = 3
     
+//    var textView : UITextView = {
+//        let txtVw = UITextView()
+//        txtVw.frame = CGRect()
+//        return txtVw
+//    }()
+    
     override func viewDidLoad() {
+        
         super.viewDidLoad()
-
+        
         txtTitle.becomeFirstResponder()
+       
+        self.configureTextVw()
         
         self.addTabBarAboveKayboard()
-        
+
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow), name: UIResponder.keyboardDidShowNotification, object: nil)
+
         self.setUpNavigationBar()
 
         guard self.taskId != nil else {return}
         self.getTask()
     }
     
+    final func configureTextVw(){
+        
+        self.view.addSubview(tskTextView)
+        
+        
+        
+    }
+    
+    @objc func keyboardDidShow(notification:Notification){
+        guard let info = notification.userInfo else { return }
+            guard let frameInfo = info[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
+        
+        /*
+        let kbSize = frameInfo.cgRectValue.size
+        let contentInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: kbSize.height, right: 0.0)
+        txtVw.contentInset = contentInsets
+        txtVw.scrollIndicatorInsets = contentInsets
+    }
+        */
+        let keyboardFrame = frameInfo.cgRectValue
+            print("keyboardFrame: \(keyboardFrame)")
+        
+
+//        UIView.transition(with: txtVw, duration: 0.3, options: .transitionCrossDissolve, animations: {
+            self.heightConstraintsTxtVw.constant =  self.view.frame.size.height -  (keyboardFrame.size.height + (self.navigationController?.navigationBar.frame.size.height)! + 40)
+//        })
+        
+        self.view.layoutIfNeeded()
+    }
+        
+           
+
+    
+    
     
     final func addTabBarAboveKayboard(){
-        let bar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 30))
+        
+        let fixedSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: self, action: nil)
+        fixedSpace.width = 20
+        
+        let bar = UIToolbar()
         bar.barStyle = .default
-        let reset = UIBarButtonItem(title: "Reset", style: .plain, target: self, action: #selector(resetTapped))
-        bar.items = [reset]
+        let photo = UIBarButtonItem(image: UIImage(systemName: "photo"), style: .plain, target: self, action: #selector(gallaryPhoto))
+        
+        let camera = UIBarButtonItem(image: UIImage(systemName: "camera"), style: .plain, target: self, action: #selector(cameraPhoto))
+
+        var items = [UIBarButtonItem]()
+        items.append( UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil) )
+        items.append(photo)
+        items.append(fixedSpace)
+        items.append(camera)
+        items.append( UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil) )
+        bar.items = items
+        
         bar.sizeToFit()
         txtVw.inputAccessoryView = bar
 
     }
     
-    @objc func resetTapped(){
+    @objc func gallaryPhoto(){
+        
+    }
+    
+    @objc func cameraPhoto(){
         
     }
     

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A30E206225CE1DDC00540B0A /* TaskTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30E206125CE1DDC00540B0A /* TaskTextView.swift */; };
 		A349681C25B4B87A0031C98A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A349681B25B4B87A0031C98A /* AppDelegate.swift */; };
 		A349681E25B4B87A0031C98A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A349681D25B4B87A0031C98A /* SceneDelegate.swift */; };
 		A349682025B4B87A0031C98A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A349681F25B4B87A0031C98A /* ViewController.swift */; };
@@ -42,6 +43,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A30E206125CE1DDC00540B0A /* TaskTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTextView.swift; sourceTree = "<group>"; };
 		A349681825B4B87A0031C98A /* ListApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ListApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A349681B25B4B87A0031C98A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A349681D25B4B87A0031C98A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -149,6 +151,7 @@
 			isa = PBXGroup;
 			children = (
 				A349688025B518FC0031C98A /* TaskDetailViewController.swift */,
+				A30E206125CE1DDC00540B0A /* TaskTextView.swift */,
 				A3C4212825BB36FE00ED4100 /* ChooseColorViewController.swift */,
 				A349681F25B4B87A0031C98A /* ViewController.swift */,
 				A377EF1B25C0F04700AABC51 /* AppManager.swift */,
@@ -313,6 +316,7 @@
 				A377EF1C25C0F04700AABC51 /* AppManager.swift in Sources */,
 				A349681E25B4B87A0031C98A /* SceneDelegate.swift in Sources */,
 				A3BC7AA025BE415700679F22 /* Task+CoreDataProperties.swift in Sources */,
+				A30E206225CE1DDC00540B0A /* TaskTextView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

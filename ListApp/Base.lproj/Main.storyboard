@@ -95,7 +95,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" springLoaded="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Q2u-Oj-BJx">
-                                <rect key="frame" x="0.0" y="140" width="375" height="638"/>
+                                <rect key="frame" x="0.0" y="88" width="375" height="690"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" id="PBx-e1-ahO" customClass="TaskCustomCell" customModule="ListApp" customModuleProvider="target">
@@ -181,7 +181,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="sYD-Jl-kXb">
+                            <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="sYD-Jl-kXb">
                                 <rect key="frame" x="8" y="96" width="359" height="354"/>
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Please enter task title here" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="msf-0w-Ipg">
@@ -198,16 +198,8 @@
                                     </textView>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="354" id="l9p-t5-3VA">
-                                        <variation key="heightClass=compact-widthClass=compact" constant="120"/>
-                                        <variation key="heightClass=compact-widthClass=regular" constant="100"/>
-                                    </constraint>
+                                    <constraint firstAttribute="height" constant="354" id="l9p-t5-3VA"/>
                                 </constraints>
-                                <variation key="heightClass=compact-widthClass=regular">
-                                    <mask key="constraints">
-                                        <include reference="l9p-t5-3VA"/>
-                                    </mask>
-                                </variation>
                             </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="kw0-Kj-Vrd"/>
@@ -220,6 +212,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Task Details" largeTitleDisplayMode="never" id="Vef-ng-hML"/>
                     <connections>
+                        <outlet property="heightConstraintsTxtVw" destination="l9p-t5-3VA" id="SKv-dY-thJ"/>
                         <outlet property="txtTitle" destination="msf-0w-Ipg" id="oEK-zA-Iu6"/>
                         <outlet property="txtVw" destination="tSU-FL-IUZ" id="unf-4L-1oJ"/>
                     </connections>
