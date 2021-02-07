@@ -38,9 +38,9 @@ class TaskDetailViewController: UIViewController {
         
         txtTitle.becomeFirstResponder()
        
-        self.configureTextVw()
+//        self.configureTextVw()
         
-        self.addTabBarAboveKayboard()
+//        self.addTabBarAboveKayboard()
 
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow), name: UIResponder.keyboardDidShowNotification, object: nil)
 
@@ -54,8 +54,16 @@ class TaskDetailViewController: UIViewController {
         
         self.view.addSubview(tskTextView)
         
-        
-        
+        NSLayoutConstraint.activate([
+            tskTextView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor,constant: 20),
+
+            tskTextView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            
+            tskTextView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            
+            tskTextView.heightAnchor.constraint(equalToConstant: 100)
+  
+        ])
     }
     
     @objc func keyboardDidShow(notification:Notification){
@@ -77,14 +85,12 @@ class TaskDetailViewController: UIViewController {
             self.heightConstraintsTxtVw.constant =  self.view.frame.size.height -  (keyboardFrame.size.height + (self.navigationController?.navigationBar.frame.size.height)! + 40)
 //        })
         
+       
         self.view.layoutIfNeeded()
     }
         
            
-
-    
-    
-    
+ 
     final func addTabBarAboveKayboard(){
         
         let fixedSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: self, action: nil)
