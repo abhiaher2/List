@@ -34,24 +34,24 @@ enum CustomColor:Int, CaseIterable{
     case blue
     case yellow
     case gray
-    case black
+    case violet
     
     
     static func getColor(colorIndex:Int) -> UIColor {
         
         switch colorIndex {
         case 0:
-            return UIColor.red
+            return UIColor.init(named: "RedColor")!
         case 1:
-            return UIColor.green
+            return UIColor.init(named: "GreenColor")!
         case 2:
-            return UIColor.blue
+            return UIColor.init(named: "BlueColor")!
         case 3:
-            return UIColor.yellow
+            return UIColor.init(named: "YellowColor")!
         case 4:
-            return UIColor.gray
+            return UIColor.init(named: "GreyColor")!
         default:
-            return UIColor.black
+            return UIColor.init(named: "VioletColor")!
         }
 
 }

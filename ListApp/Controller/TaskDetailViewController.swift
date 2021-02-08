@@ -8,55 +8,32 @@
 import UIKit
 import CoreData
 
-extension TaskDetailViewController : UITextFieldDelegate{
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        tskTextView.becomeFirstResponder()
-        return true
-    }
-}
 
 class TaskDetailViewController: UIViewController {
    
-    @IBOutlet weak var heightConstraintsTxtVw: NSLayoutConstraint!
-    // private var saveData : (() -> Void)? = nil
-
-    
-    
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
-    @IBOutlet weak var txtVw: UITextView!
-    @IBOutlet weak var txtTitle: UITextField!
     
     var tskTextField = TaskTextField()
     
     var tskTextView = TaskTextView()
     
-    var  button : UIButton?
+    var button : UIButton?
     var taskId : Int?
     var note: [Task]?
-    var selectedColorIndex = 3
     var keyboardHeight :CGFloat?
-//    var textView : UITextView = {
-//        let txtVw = UITextView()
-//        txtVw.frame = CGRect()
-//        return txtVw
-//    }()
+
+    var selectedColorIndex = 3
     
     override func viewDidLoad() {
         
         super.viewDidLoad()
+        
         self.configureTextField()
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow), name: UIResponder.keyboardDidShowNotification, object: nil)
         
-        txtTitle.becomeFirstResponder()
+        self.registerForKeyboardNotification()
+        
+        self.addTabBarAboveKeyboard()
 
-        self.addTabBarAboveKayboard()
-
-//        var frame = CGRect(x: txtVw.frame.origin.x, y: txtVw.frame.origin.y, width: txtVw.frame.origin.y, height: <#T##CGFloat#>)
-//        frame?.size.height = self.keyboardHeight!
-        
-//        tskTextView = TaskTextView(frame: frame, textContainer: nil)
-        
         self.setUpNavigationBar()
         
         self.updateColor(index: selectedColorIndex)
@@ -64,6 +41,8 @@ class TaskDetailViewController: UIViewController {
         guard self.taskId != nil else {return}
         self.getTask()
     }
+    
+    
     final func configureTextField(){
         self.view.addSubview(self.tskTextField)
         self.tskTextField.delegate = self
@@ -76,8 +55,28 @@ class TaskDetailViewController: UIViewController {
             self.tskTextField.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 20),
             
             self.tskTextField.heightAnchor.constraint(equalToConstant: 32)
-        
         ])
+    }
+    
+    
+    final func registerForKeyboardNotification(){
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow), name: UIResponder.keyboardDidShowNotification, object: nil)
+    }
+    
+    
+    @objc func keyboardDidShow(notification:Notification){
+        guard let info = notification.userInfo else { return }
+            guard let frameInfo = info[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
+    
+        let keyboardFrame = frameInfo.cgRectValue
+            print("keyboardFrame: \(keyboardFrame)")
+    
+        // 20: textfield top anchor height
+        let remainingHeight = self.topbarHeight +  self.tskTextField.frame.size.height + CGFloat(20)
+      
+        self.keyboardHeight = self.view.frame.size.height - (keyboardFrame.size.height + remainingHeight)
+        
+        self.configureTextVw()
     }
     
     
@@ -93,41 +92,18 @@ class TaskDetailViewController: UIViewController {
             tskTextView.topAnchor.constraint(equalTo: self.tskTextField.safeAreaLayoutGuide.bottomAnchor, constant: 0),
             
             tskTextView.heightAnchor.constraint(equalToConstant: self.keyboardHeight!)
-  
         ])
-    }
-    
-    @objc func keyboardDidShow(notification:Notification){
-        guard let info = notification.userInfo else { return }
-            guard let frameInfo = info[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
-    
-        let keyboardFrame = frameInfo.cgRectValue
-            print("keyboardFrame: \(keyboardFrame)")
-
-//            self.heightConstraintsTxtVw.constant =  self.view.frame.size.height -  (keyboardFrame.size.height + (self.navigationController?.navigationBar.frame.size.height)! + 40)
-        var tempHeight = 0
-        
-        if (UIDevice.current.hasNotch){
-            tempHeight = 44
-        }
-      
-        self.keyboardHeight = self.view.frame.size.height -  (keyboardFrame.size.height + (self.navigationController?.navigationBar.frame.size.height)! + 40  + self.tskTextField.frame.size.height  + 54)
-//        self.view.layoutIfNeeded()
-        
-        self.configureTextVw()
-
     }
         
    
- 
-    final func addTabBarAboveKayboard(){
+    final func addTabBarAboveKeyboard(){
         
         let fixedSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: self, action: nil)
         fixedSpace.width = 20
         
         let bar = UIToolbar()
         bar.barStyle = .default
-        let photo = UIBarButtonItem(image: UIImage(systemName: "photo"), style: .plain, target: self, action: #selector(gallaryPhoto))
+        let photo = UIBarButtonItem(image: UIImage(systemName: "photo"), style: .plain, target: self, action: #selector(galleryPhoto))
         
         let camera = UIBarButtonItem(image: UIImage(systemName: "camera"), style: .plain, target: self, action: #selector(cameraPhoto))
         
@@ -145,53 +121,49 @@ class TaskDetailViewController: UIViewController {
         
         bar.sizeToFit()
         tskTextView.inputAccessoryView = bar
-
     }
+    
     
     @objc func fontClicked(){
         
     }
     
     
-    @objc func gallaryPhoto(){
+    @objc func galleryPhoto(){
         
     }
+    
     
     @objc func cameraPhoto(){
         
     }
     
+    
     private func setUpNavigationBar(){
         let doneButton   = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(clickDoneButton))
         button = UIButton(type: .custom)
-        button!.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
+        button!.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
+        button?.layer.cornerRadius = (button?.frame.size.width)! / 2
         button!.addTarget(self, action: #selector(clickChooseColor), for: .touchUpInside)
         
         let item = UIBarButtonItem(customView: button!)
         navigationItem.rightBarButtonItems = [ doneButton,item]
-        
     }
     
-    @objc private func clickChooseColor(){
-       let vc =  self.storyboard?.instantiateViewController(withIdentifier: "ChooseColorVC") as! ChooseColorViewController
-        
-        vc.setColor(completion: updateColor)
-//        vc.selectedColor = { (index) in
-//        self.button?.backgroundColor = CustomColor.getColor(colorIndex: index!)
-//        self.view.backgroundColor = CustomColor.getColor(colorIndex: index!)
-//            self.selectedColorIndex = index!
-//        }
-        self.present(vc, animated: true, completion: nil)
-    }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
-    }
     private func updateColor(index: Int?){
         button?.backgroundColor = CustomColor.getColor(colorIndex: index!)
         self.view.backgroundColor = CustomColor.getColor(colorIndex: index!)
         self.selectedColorIndex = index!
     }
+    
+    
+    @objc private func clickChooseColor(){
+       let vc =  self.storyboard?.instantiateViewController(withIdentifier: "ChooseColorVC") as! ChooseColorViewController
+        vc.setColor(completion: updateColor)
+        self.present(vc, animated: true, completion: nil)
+    }
+   
     
     /*-------------------------------------------------------------------------------------------*/
     private func getTask(){
@@ -265,6 +237,13 @@ class TaskDetailViewController: UIViewController {
             print("Error found in upading the task")
         }
     }
-   
 }
 
+
+
+extension TaskDetailViewController : UITextFieldDelegate{
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        tskTextView.becomeFirstResponder()
+        return true
+    }
+}

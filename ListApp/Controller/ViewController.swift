@@ -14,6 +14,7 @@ enum noteType{
 
 final class ViewController: UIViewController {
     
+    
     var pinnedCount = 0
     
     var resultSearchController = UISearchController()
@@ -31,7 +32,6 @@ final class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         title = "Notes"
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewTask))
         self.tblTask.tableFooterView = UIView()
@@ -52,9 +52,10 @@ final class ViewController: UIViewController {
                controller.searchResultsUpdater = self
                controller.dimsBackgroundDuringPresentation = false
                controller.searchBar.sizeToFit()
-
+        controller.searchBar.backgroundColor = UIColor.init(named: "BackgroundColor")!
+        controller.searchBar.tintColor = UIColor.init(named: "BackgroundColor")!
                tblTask.tableHeaderView = controller.searchBar
-
+        tblTask.tableHeaderView?.backgroundColor = .clear
                return controller
            })()
         

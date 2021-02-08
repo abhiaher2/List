@@ -23,7 +23,7 @@ class TaskTextView: UITextView {
     private func configure(height: CGFloat){
         translatesAutoresizingMaskIntoConstraints = false
         layer.cornerRadius = 5
-        //layer.borderWidth = 1.0
+      //  layer.borderWidth = 1.0
         frame.size.height = height
         textColor = .label
         tintColor = .label
