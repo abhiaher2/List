@@ -70,7 +70,7 @@ extension ChooseColorViewController: UICollectionViewDataSource{
         cell.backgroundColor = CustomColor.getColor(colorIndex:indexPath.row)
         cell.layer.borderColor = UIColor.black.cgColor
         cell.layer.borderWidth = 1
-        cell.layer.cornerRadius = 10
+        cell.layer.cornerRadius = cell.frame.size.height / 2
         return cell
     }
 }
@@ -78,7 +78,6 @@ extension ChooseColorViewController: UICollectionViewDataSource{
 extension ChooseColorViewController: UICollectionViewDelegate{
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(indexPath.row)
         self.dismiss(animated: true) { [self] in
             if let block = selectedColor {
                 block(indexPath.row)

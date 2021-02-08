@@ -34,7 +34,7 @@ final class ViewController: UIViewController {
 
         title = "Notes"
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewTask))
-        
+        self.tblTask.tableFooterView = UIView()
         self.getSearchBar()
     }
     

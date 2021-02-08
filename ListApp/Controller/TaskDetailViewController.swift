@@ -8,24 +8,34 @@
 import UIKit
 import CoreData
 
+extension TaskDetailViewController : UITextFieldDelegate{
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        tskTextView.becomeFirstResponder()
+        return true
+    }
+}
+
 class TaskDetailViewController: UIViewController {
    
     @IBOutlet weak var heightConstraintsTxtVw: NSLayoutConstraint!
     // private var saveData : (() -> Void)? = nil
 
     
+    
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     @IBOutlet weak var txtVw: UITextView!
     @IBOutlet weak var txtTitle: UITextField!
     
-    let tskTextView = TaskTextView()
+    var tskTextField = TaskTextField()
+    
+    var tskTextView = TaskTextView()
     
     var  button : UIButton?
     var taskId : Int?
     var note: [Task]?
     var selectedColorIndex = 3
-    
+    var keyboardHeight :CGFloat?
 //    var textView : UITextView = {
 //        let txtVw = UITextView()
 //        txtVw.frame = CGRect()
@@ -35,20 +45,41 @@ class TaskDetailViewController: UIViewController {
     override func viewDidLoad() {
         
         super.viewDidLoad()
+        self.configureTextField()
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow), name: UIResponder.keyboardDidShowNotification, object: nil)
         
         txtTitle.becomeFirstResponder()
-       
-//        self.configureTextVw()
+
+        self.addTabBarAboveKayboard()
+
+//        var frame = CGRect(x: txtVw.frame.origin.x, y: txtVw.frame.origin.y, width: txtVw.frame.origin.y, height: <#T##CGFloat#>)
+//        frame?.size.height = self.keyboardHeight!
         
-//        self.addTabBarAboveKayboard()
-
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow), name: UIResponder.keyboardDidShowNotification, object: nil)
-
+//        tskTextView = TaskTextView(frame: frame, textContainer: nil)
+        
         self.setUpNavigationBar()
+        
+        self.updateColor(index: selectedColorIndex)
 
         guard self.taskId != nil else {return}
         self.getTask()
     }
+    final func configureTextField(){
+        self.view.addSubview(self.tskTextField)
+        self.tskTextField.delegate = self
+        
+        NSLayoutConstraint.activate([
+            self.tskTextField.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            
+            self.tskTextField.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            
+            self.tskTextField.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            
+            self.tskTextField.heightAnchor.constraint(equalToConstant: 32)
+        
+        ])
+    }
+    
     
     final func configureTextVw(){
         
@@ -59,9 +90,9 @@ class TaskDetailViewController: UIViewController {
 
             tskTextView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             
-            tskTextView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            tskTextView.topAnchor.constraint(equalTo: self.tskTextField.safeAreaLayoutGuide.bottomAnchor, constant: 0),
             
-            tskTextView.heightAnchor.constraint(equalToConstant: 100)
+            tskTextView.heightAnchor.constraint(equalToConstant: self.keyboardHeight!)
   
         ])
     }
@@ -69,27 +100,25 @@ class TaskDetailViewController: UIViewController {
     @objc func keyboardDidShow(notification:Notification){
         guard let info = notification.userInfo else { return }
             guard let frameInfo = info[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
-        
-        /*
-        let kbSize = frameInfo.cgRectValue.size
-        let contentInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: kbSize.height, right: 0.0)
-        txtVw.contentInset = contentInsets
-        txtVw.scrollIndicatorInsets = contentInsets
-    }
-        */
+    
         let keyboardFrame = frameInfo.cgRectValue
             print("keyboardFrame: \(keyboardFrame)")
-        
 
-//        UIView.transition(with: txtVw, duration: 0.3, options: .transitionCrossDissolve, animations: {
-            self.heightConstraintsTxtVw.constant =  self.view.frame.size.height -  (keyboardFrame.size.height + (self.navigationController?.navigationBar.frame.size.height)! + 40)
-//        })
+//            self.heightConstraintsTxtVw.constant =  self.view.frame.size.height -  (keyboardFrame.size.height + (self.navigationController?.navigationBar.frame.size.height)! + 40)
+        var tempHeight = 0
         
-       
-        self.view.layoutIfNeeded()
+        if (UIDevice.current.hasNotch){
+            tempHeight = 44
+        }
+      
+        self.keyboardHeight = self.view.frame.size.height -  (keyboardFrame.size.height + (self.navigationController?.navigationBar.frame.size.height)! + 40  + self.tskTextField.frame.size.height  + 54)
+//        self.view.layoutIfNeeded()
+        
+        self.configureTextVw()
+
     }
         
-           
+   
  
     final func addTabBarAboveKayboard(){
         
@@ -101,19 +130,28 @@ class TaskDetailViewController: UIViewController {
         let photo = UIBarButtonItem(image: UIImage(systemName: "photo"), style: .plain, target: self, action: #selector(gallaryPhoto))
         
         let camera = UIBarButtonItem(image: UIImage(systemName: "camera"), style: .plain, target: self, action: #selector(cameraPhoto))
+        
+        let font = UIBarButtonItem(image: UIImage(systemName: "pencil"), style: .plain, target: self, action: #selector(fontClicked))
 
         var items = [UIBarButtonItem]()
         items.append( UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil) )
         items.append(photo)
         items.append(fixedSpace)
         items.append(camera)
+        items.append(fixedSpace)
+        items.append(font)
         items.append( UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil) )
         bar.items = items
         
         bar.sizeToFit()
-        txtVw.inputAccessoryView = bar
+        tskTextView.inputAccessoryView = bar
 
     }
+    
+    @objc func fontClicked(){
+        
+    }
+    
     
     @objc func gallaryPhoto(){
         
@@ -132,7 +170,6 @@ class TaskDetailViewController: UIViewController {
         let item = UIBarButtonItem(customView: button!)
         navigationItem.rightBarButtonItems = [ doneButton,item]
         
-        self.updateColor(index: selectedColorIndex)
     }
     
     @objc private func clickChooseColor(){
@@ -165,8 +202,8 @@ class TaskDetailViewController: UIViewController {
             request.predicate = predicate
             self.note = try AppManager.context.fetch(request)
             let not = self.note![0]
-            txtVw.text = not.taskdetail
-            txtTitle.text = not.taskname
+            tskTextView.text = not.taskdetail
+            tskTextField.text = not.taskname
             selectedColorIndex = Int(not.colorindex)
             self.updateColor(index: selectedColorIndex)
         }
@@ -190,7 +227,7 @@ class TaskDetailViewController: UIViewController {
     
     private func saveNewTask(){
         
-        guard  (!txtTitle.text!.isEmpty) || !txtVw.text.isEmpty else {
+        guard  (!tskTextField.text!.isEmpty) || !tskTextView.text.isEmpty else {
             print("Empty data. Not saved.")
             return}
 
@@ -198,8 +235,8 @@ class TaskDetailViewController: UIViewController {
         let taskObj = Task(context: context)
         let uniqueNumber = Int(arc4random_uniform(30000))
         taskObj.taskid = Int64(uniqueNumber)
-        taskObj.taskname = txtTitle.text
-        taskObj.taskdetail = txtVw.text
+        taskObj.taskname = tskTextField.text
+        taskObj.taskdetail = tskTextView.text
         taskObj.createdat = NSDate() as Date
         taskObj.updatedat = NSDate() as Date
         taskObj.colorindex = Int64(selectedColorIndex)
@@ -219,8 +256,8 @@ class TaskDetailViewController: UIViewController {
         request.predicate = predicate
         self.note = try context.fetch(request)
         let not = self.note![0]
-        not.taskdetail = txtVw.text
-        not.taskname = txtTitle.text
+        not.taskdetail = tskTextView.text
+        not.taskname = tskTextField.text
         not.updatedat = NSDate() as Date
         not.colorindex = Int64(selectedColorIndex)
         }
