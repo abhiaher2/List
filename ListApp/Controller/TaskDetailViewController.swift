@@ -20,7 +20,13 @@ class TaskDetailViewController: UIViewController {
     var button : UIButton?
     var taskId : Int?
     var note: [Task]?
-    var keyboardHeight :CGFloat?
+    var vc : ChooseColorViewController?
+    
+    var keyboardHeight: CGFloat = 100.0 {
+        didSet{
+            self.configureTextVw()
+        }
+    }
 
     var selectedColorIndex = 3
     
@@ -75,8 +81,6 @@ class TaskDetailViewController: UIViewController {
         let remainingHeight = self.topbarHeight +  self.tskTextField.frame.size.height + CGFloat(20)
       
         self.keyboardHeight = self.view.frame.size.height - (keyboardFrame.size.height + remainingHeight)
-        
-        self.configureTextVw()
     }
     
     
@@ -91,7 +95,7 @@ class TaskDetailViewController: UIViewController {
             
             tskTextView.topAnchor.constraint(equalTo: self.tskTextField.safeAreaLayoutGuide.bottomAnchor, constant: 0),
             
-            tskTextView.heightAnchor.constraint(equalToConstant: self.keyboardHeight!)
+            tskTextView.heightAnchor.constraint(equalToConstant: self.keyboardHeight)
         ])
     }
         
@@ -108,6 +112,8 @@ class TaskDetailViewController: UIViewController {
         let camera = UIBarButtonItem(image: UIImage(systemName: "camera"), style: .plain, target: self, action: #selector(cameraPhoto))
         
         let font = UIBarButtonItem(image: UIImage(systemName: "pencil"), style: .plain, target: self, action: #selector(fontClicked))
+        
+        let share = UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up"), style: .plain, target: self, action: #selector(shareClicked))
 
         var items = [UIBarButtonItem]()
         items.append( UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil) )
@@ -116,11 +122,18 @@ class TaskDetailViewController: UIViewController {
         items.append(camera)
         items.append(fixedSpace)
         items.append(font)
+        items.append(fixedSpace)
+        items.append(share)
         items.append( UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil) )
         bar.items = items
         
         bar.sizeToFit()
         tskTextView.inputAccessoryView = bar
+    }
+    
+    
+    @objc func shareClicked(){
+        
     }
     
     
@@ -142,8 +155,8 @@ class TaskDetailViewController: UIViewController {
     private func setUpNavigationBar(){
         let doneButton   = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(clickDoneButton))
         button = UIButton(type: .custom)
-        button!.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
-        button?.layer.cornerRadius = (button?.frame.size.width)! / 2
+        button!.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
+        button?.layer.cornerRadius = 15
         button!.addTarget(self, action: #selector(clickChooseColor), for: .touchUpInside)
         
         let item = UIBarButtonItem(customView: button!)
@@ -155,15 +168,39 @@ class TaskDetailViewController: UIViewController {
         button?.backgroundColor = CustomColor.getColor(colorIndex: index!)
         self.view.backgroundColor = CustomColor.getColor(colorIndex: index!)
         self.selectedColorIndex = index!
+        self.removeChildVC()
+    }
+
+    private func removeChildVC(){
+        self.vc?.view.removeFromSuperview()
+        self.vc?.removeFromParent()
+        self.vc = nil
+    }
+    
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        self.removeChildVC()
     }
     
     
     @objc private func clickChooseColor(){
-       let vc =  self.storyboard?.instantiateViewController(withIdentifier: "ChooseColorVC") as! ChooseColorViewController
-        vc.setColor(completion: updateColor)
-        self.present(vc, animated: true, completion: nil)
+        
+        
+        vc =  self.storyboard?.instantiateViewController(withIdentifier: "ChooseColorVC") as? ChooseColorViewController
+        vc!.setColor(completion: updateColor)
+        vc!.view.frame.origin.y = self.topbarHeight
+        vc!.view.frame.size.height = 250
+        vc!.view.backgroundColor = .black
+        self.view.addSubview(vc!.view)
+        self.addChild(vc!)
+        vc!.didMove(toParent: self)
     }
    
+    
+    deinit {
+        print("in deinit from task detail ")
+    }
+    
     
     /*-------------------------------------------------------------------------------------------*/
     private func getTask(){

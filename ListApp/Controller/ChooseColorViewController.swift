@@ -13,7 +13,7 @@ class ChooseColorViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        view.backgroundColor = .black
         // Do any additional setup after loading the view.
     }
     
@@ -66,6 +66,7 @@ extension ChooseColorViewController: UICollectionViewDataSource{
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        collectionView.backgroundColor = .black
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath)
         cell.backgroundColor = CustomColor.getColor(colorIndex:indexPath.row)
         cell.layer.borderColor = UIColor.black.cgColor

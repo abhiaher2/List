@@ -27,9 +27,10 @@ class TaskTextField: UITextField {
         textColor = .label
         layer.cornerRadius = 5
         layer.borderWidth = 1
-        font = UIFont.systemFont(ofSize: 18)
+        font = UIFont(name: "Georgia Bold", size: 20)
         textAlignment = .left
         autocorrectionType = .yes
+        returnKeyType = .next
         placeholder = "Please enter task title here"
         setLeftPaddingPoints(5)
         setRightPaddingPoints(5)

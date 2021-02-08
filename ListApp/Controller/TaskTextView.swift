@@ -23,12 +23,13 @@ class TaskTextView: UITextView {
     private func configure(height: CGFloat){
         translatesAutoresizingMaskIntoConstraints = false
         layer.cornerRadius = 5
-      //  layer.borderWidth = 1.0
+       // layer.borderWidth = 1.0
         frame.size.height = height
         textColor = .label
         tintColor = .label
         textAlignment = .left
-        font = UIFont.systemFont(ofSize: 16.0)
+        font = UIFont(name: "Georgia", size: 18)
+
         autocorrectionType = .yes
         backgroundColor  = .clear
     }
