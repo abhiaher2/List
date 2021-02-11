@@ -24,7 +24,7 @@ class TaskTextField: UITextField {
     private func configure(){
         becomeFirstResponder()
         translatesAutoresizingMaskIntoConstraints = false
-        textColor = .label
+        textColor = .black
         layer.cornerRadius = 5
         layer.borderWidth = 1
         font = UIFont(name: "Georgia Bold", size: 20)

@@ -169,6 +169,8 @@ class TaskDetailViewController: UIViewController {
         self.view.backgroundColor = CustomColor.getColor(colorIndex: index!)
         self.selectedColorIndex = index!
         self.removeChildVC()
+        tskTextField.becomeFirstResponder()
+
     }
 
     private func removeChildVC(){
@@ -189,11 +191,11 @@ class TaskDetailViewController: UIViewController {
         vc =  self.storyboard?.instantiateViewController(withIdentifier: "ChooseColorVC") as? ChooseColorViewController
         vc!.setColor(completion: updateColor)
         vc!.view.frame.origin.y = self.topbarHeight
-        vc!.view.frame.size.height = 250
-        vc!.view.backgroundColor = .black
         self.view.addSubview(vc!.view)
-        self.addChild(vc!)
+        //self.addChild(vc!)
         vc!.didMove(toParent: self)
+        tskTextField.resignFirstResponder()
+        tskTextView.resignFirstResponder()
     }
    
     

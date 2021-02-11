@@ -199,6 +199,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="f4L-H8-GSS">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="778"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Hia-In-AW4">
                                 <rect key="frame" x="20" y="60" width="335" height="702"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -230,8 +234,12 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="7hs-CJ-K86" firstAttribute="trailing" secondItem="Hia-In-AW4" secondAttribute="trailing" constant="20" id="57d-fF-rBh"/>
+                            <constraint firstItem="f4L-H8-GSS" firstAttribute="leading" secondItem="7hs-CJ-K86" secondAttribute="leading" id="Au2-rH-ca8"/>
+                            <constraint firstItem="f4L-H8-GSS" firstAttribute="trailing" secondItem="7hs-CJ-K86" secondAttribute="trailing" id="B7Y-jU-jS2"/>
                             <constraint firstItem="Hia-In-AW4" firstAttribute="leading" secondItem="7hs-CJ-K86" secondAttribute="leading" constant="20" id="H01-zQ-wxe"/>
+                            <constraint firstItem="7hs-CJ-K86" firstAttribute="bottom" secondItem="f4L-H8-GSS" secondAttribute="bottom" id="Hca-Sb-dIo"/>
                             <constraint firstItem="7hs-CJ-K86" firstAttribute="bottom" secondItem="Hia-In-AW4" secondAttribute="bottom" constant="16" id="jqW-6S-HPQ"/>
+                            <constraint firstItem="f4L-H8-GSS" firstAttribute="top" secondItem="nhU-w2-bbn" secondAttribute="top" id="r9L-e3-bdY"/>
                             <constraint firstItem="Hia-In-AW4" firstAttribute="top" secondItem="7hs-CJ-K86" secondAttribute="top" constant="16" id="rPe-yE-Aon"/>
                         </constraints>
                     </view>
