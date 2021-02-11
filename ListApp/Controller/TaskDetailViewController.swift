@@ -10,7 +10,7 @@ import CoreData
 
 
 class TaskDetailViewController: UIViewController {
-   
+    
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     var tskTextField = TaskTextField()
@@ -19,7 +19,7 @@ class TaskDetailViewController: UIViewController {
     
     var button : UIButton?
     var taskId : Int?
-    var note: [Task]?
+    var task: [Task]?
     var vc : ChooseColorViewController?
     
     var keyboardHeight: CGFloat = 100.0 {
@@ -27,7 +27,7 @@ class TaskDetailViewController: UIViewController {
             self.configureTextVw()
         }
     }
-
+    
     var selectedColorIndex = 3
     
     override func viewDidLoad() {
@@ -39,11 +39,11 @@ class TaskDetailViewController: UIViewController {
         self.registerForKeyboardNotification()
         
         self.addTabBarAboveKeyboard()
-
+        
         self.setUpNavigationBar()
         
         self.updateColor(index: selectedColorIndex)
-
+        
         guard self.taskId != nil else {return}
         self.getTask()
     }
@@ -72,14 +72,14 @@ class TaskDetailViewController: UIViewController {
     
     @objc func keyboardDidShow(notification:Notification){
         guard let info = notification.userInfo else { return }
-            guard let frameInfo = info[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
-    
+        guard let frameInfo = info[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
+        
         let keyboardFrame = frameInfo.cgRectValue
-            print("keyboardFrame: \(keyboardFrame)")
-    
+        print("keyboardFrame: \(keyboardFrame)")
+        
         // 20: textfield top anchor height
         let remainingHeight = self.topbarHeight +  self.tskTextField.frame.size.height + CGFloat(20)
-      
+        
         self.keyboardHeight = self.view.frame.size.height - (keyboardFrame.size.height + remainingHeight)
     }
     
@@ -90,7 +90,7 @@ class TaskDetailViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             tskTextView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor,constant: 20),
-
+            
             tskTextView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             
             tskTextView.topAnchor.constraint(equalTo: self.tskTextField.safeAreaLayoutGuide.bottomAnchor, constant: 0),
@@ -98,8 +98,8 @@ class TaskDetailViewController: UIViewController {
             tskTextView.heightAnchor.constraint(equalToConstant: self.keyboardHeight)
         ])
     }
-        
-   
+    
+    
     final func addTabBarAboveKeyboard(){
         
         let fixedSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: self, action: nil)
@@ -114,7 +114,7 @@ class TaskDetailViewController: UIViewController {
         let font = UIBarButtonItem(image: UIImage(systemName: "pencil"), style: .plain, target: self, action: #selector(fontClicked))
         
         let share = UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up"), style: .plain, target: self, action: #selector(shareClicked))
-
+        
         var items = [UIBarButtonItem]()
         items.append( UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil) )
         items.append(photo)
@@ -170,9 +170,9 @@ class TaskDetailViewController: UIViewController {
         self.selectedColorIndex = index!
         self.removeChildVC()
         tskTextField.becomeFirstResponder()
-
+        
     }
-
+    
     private func removeChildVC(){
         self.vc?.view.removeFromSuperview()
         self.vc?.removeFromParent()
@@ -186,8 +186,6 @@ class TaskDetailViewController: UIViewController {
     
     
     @objc private func clickChooseColor(){
-        
-        
         vc =  self.storyboard?.instantiateViewController(withIdentifier: "ChooseColorVC") as? ChooseColorViewController
         vc!.setColor(completion: updateColor)
         vc!.view.frame.origin.y = self.topbarHeight
@@ -197,7 +195,7 @@ class TaskDetailViewController: UIViewController {
         tskTextField.resignFirstResponder()
         tskTextView.resignFirstResponder()
     }
-   
+    
     
     deinit {
         print("in deinit from task detail ")
@@ -211,11 +209,11 @@ class TaskDetailViewController: UIViewController {
             let request = Task.fetchRequest() as NSFetchRequest<Task>
             let predicate = NSPredicate(format:"taskid = %d", self.taskId!)
             request.predicate = predicate
-            self.note = try AppManager.context.fetch(request)
-            let not = self.note![0]
-            tskTextView.text = not.taskdetail
-            tskTextField.text = not.taskname
-            selectedColorIndex = Int(not.colorindex)
+            self.task = try AppManager.context.fetch(request)
+            let tmpTask = self.task![0]
+            tskTextView.text = tmpTask.taskdetail
+            tskTextField.text = tmpTask.taskname
+            selectedColorIndex = Int(tmpTask.colorindex)
             self.updateColor(index: selectedColorIndex)
         }
         catch{
@@ -224,7 +222,7 @@ class TaskDetailViewController: UIViewController {
     }
     
     /*-------------------------------------------------------------------------------------------*/
-
+    
     @objc func clickDoneButton(){
         if self.taskId != nil{
             self.updateTask()
@@ -241,7 +239,7 @@ class TaskDetailViewController: UIViewController {
         guard  (!tskTextField.text!.isEmpty) || !tskTextView.text.isEmpty else {
             print("Empty data. Not saved.")
             return}
-
+        
         
         let taskObj = Task(context: context)
         let uniqueNumber = Int(arc4random_uniform(30000))
@@ -262,15 +260,18 @@ class TaskDetailViewController: UIViewController {
     
     private func updateTask(){
         do{
-        let request = Task.fetchRequest() as NSFetchRequest<Task>
+            let request = Task.fetchRequest() as NSFetchRequest<Task>
             let predicate = NSPredicate(format:"taskid = %d", self.taskId!)
-        request.predicate = predicate
-        self.note = try context.fetch(request)
-        let not = self.note![0]
-        not.taskdetail = tskTextView.text
-        not.taskname = tskTextField.text
-        not.updatedat = NSDate() as Date
-        not.colorindex = Int64(selectedColorIndex)
+            request.predicate = predicate
+            self.task = try context.fetch(request)
+            let tmpTask = self.task![0]
+            tmpTask.taskdetail = tskTextView.text
+            tmpTask.taskname = tskTextField.text
+            tmpTask.updatedat = NSDate() as Date
+            tmpTask.colorindex = Int64(selectedColorIndex)
+            
+            try self.context.save()
+
         }
         catch{
             print("Error found in upading the task")

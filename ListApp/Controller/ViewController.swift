@@ -247,18 +247,9 @@ extension ViewController : UITableViewDataSource{
 
         
         let task = self.getDataSource(index: indexPath.section)![indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! TaskCustomCell
-        cell.tasktext.text = task.taskname
-        cell.taskDetail.text = task.taskdetail
-        cell.UpdatedAt.text = "\(self.getDateInString(date:task.updatedat!))"
-        cell.backgroundColor = CustomColor.getColor(colorIndex: Int(task.colorindex))
+        let cell = tableView.dequeueReusableCell(withIdentifier: TaskCustomCell.reuseId, for: indexPath) as! TaskCustomCell
+        cell.set(taskObj: task)
         return cell
         
-    }
-    
-    private func getDateInString(date: Date) -> String{
-        let formatter = DateFormatter()
-        formatter.dateFormat = "d MMM y, HH:mm"
-        return formatter.string(from: date)
     }
 }
