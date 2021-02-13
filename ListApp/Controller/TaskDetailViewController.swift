@@ -155,7 +155,7 @@ class TaskDetailViewController: UIViewController {
     private func setUpNavigationBar(){
         let doneButton   = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(clickDoneButton))
         button = UIButton(type: .custom)
-        button!.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
+        button!.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
         button?.layer.cornerRadius = 15
         button!.addTarget(self, action: #selector(clickChooseColor), for: .touchUpInside)
         
