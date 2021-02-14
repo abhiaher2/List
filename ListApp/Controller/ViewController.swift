@@ -53,6 +53,7 @@ final class ViewController: UIViewController {
         if (dictNotes.values.count > 0){
             self.showTableViewAndSearchBar()
         }
+        
     }
     
     private func showTableViewAndSearchBar(){
@@ -311,7 +312,12 @@ extension ViewController: UISearchResultsUpdating{
         var tmpFilteredNotes = [Task]()
         
         for value in self.dictNotes.values{
-            tmpFilteredNotes = value.filter{($0.taskname?.lowercased().contains(searchController.searchBar.text!.lowercased()))!}
+            tmpFilteredNotes = value.filter{($0.taskname?.lowercased().contains(searchController.searchBar.text!.lowercased()))! ||
+                
+                ($0.taskdetail?.lowercased().contains(searchController.searchBar.text!.lowercased()))!
+            }
+            
+            
             self.filteredNotes.append(contentsOf: tmpFilteredNotes)
         }
         tblTask.reloadData()
