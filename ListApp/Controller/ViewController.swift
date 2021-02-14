@@ -17,6 +17,7 @@ final class ViewController: UIViewController {
     
     var pinnedCount = 0
     
+    @IBOutlet weak var vwAddTask: UIView!
     var resultSearchController = UISearchController()
     
     @IBOutlet weak var tblTask: UITableView!
@@ -24,6 +25,7 @@ final class ViewController: UIViewController {
     var filteredNotes = [Task]()
     var dictNotes = [noteType: [Task]]()
     
+    @IBOutlet weak var lblAddTask: UILabel!
     
     
     
@@ -41,6 +43,7 @@ final class ViewController: UIViewController {
         self.tblTask.isHidden = true
         self.getSearchBar()
         
+        lblAddTask.attributedText = AppManager.makeAttributedString(with: AppManager.AddNotes, andBoldString: "+")
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -55,13 +58,14 @@ final class ViewController: UIViewController {
     private func showTableViewAndSearchBar(){
         self.tblTask.isHidden = false
         resultSearchController.searchBar.isHidden = false
-        
+        vwAddTask.isHidden = true
     }
     
     private func hideTableViewAndSearchBar(){
         self.tblTask.isHidden = true
         resultSearchController.searchBar.isHidden = true
-        
+        vwAddTask.isHidden = false
+
     }
     
     

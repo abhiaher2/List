@@ -161,6 +161,7 @@ class TaskDetailViewController: UIViewController {
         
         let item = UIBarButtonItem(customView: button!)
         navigationItem.rightBarButtonItems = [ doneButton,item]
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Georgia Bold", size: 18)!]
     }
     
     

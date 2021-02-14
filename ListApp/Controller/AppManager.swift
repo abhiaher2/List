@@ -9,9 +9,21 @@ import Foundation
 import UIKit
 class AppManager{
     
+    static let AddNotes = "Tap + to create a new note"
     static let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     
+    static func makeAttributedString(with fullString: String, andBoldString boldString : String ) -> NSAttributedString{
+        
+        let attributedString = NSMutableAttributedString(string: fullString)
+        
+        let boldFontAttribute: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 18.0)]
+        
+        let range = (fullString as NSString).range(of: boldString)
+           attributedString.addAttributes(boldFontAttribute, range: range)
+           return attributedString
+        
+    }
 }
 
 extension UIDevice {
