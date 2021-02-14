@@ -1,2 +1,3 @@
 .DS_Store
-/Users/abhiaher2/Documents/GIT Projects/GITApp/ListApp/ListApp.xcodeproj/project.xcworkspace/xcuserdata/abhiaher2.xcuserdatad
+*.xcuserdata
+
