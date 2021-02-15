@@ -14,7 +14,6 @@ enum noteType{
 
 final class ViewController: UIViewController {
     
-    
     var pinnedCount = 0
     
     @IBOutlet weak var vwAddTask: UIView!
@@ -28,13 +27,11 @@ final class ViewController: UIViewController {
     @IBOutlet weak var lblAddTask: UILabel!
     
     
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Notes"
         //        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewTask))
-        //
+
         let add = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(addNewTask))
         add.tintColor = .black
         navigationItem.rightBarButtonItem = add
@@ -46,15 +43,38 @@ final class ViewController: UIViewController {
         lblAddTask.attributedText = AppManager.makeAttributedString(with: AppManager.AddNotes, andBoldString: "+")
     }
     
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         self.fetchData()
-        self.tblTask.reloadData()
+        self.animateTable()
         if (dictNotes.values.count > 0){
             self.showTableViewAndSearchBar()
         }
+    }
+
+    
+    private func animateTable(){
+        self.tblTask.reloadData()
+        let cells = self.tblTask.visibleCells
+        
+        let tableViewHeight = self.tblTask.bounds.size.width
+        
+        for cell in cells{
+            cell.transform = CGAffineTransform(translationX: tableViewHeight, y: 0)
+        }
+        
+        var delayCounter = 0
+        
+        for cell in cells {
+            UIView.animate(withDuration: 1.75, delay: Double(delayCounter)*0.05, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+                cell.transform = CGAffineTransform.identity
+            }, completion: nil )
+            delayCounter += 1
+        }
         
     }
+    
     
     private func showTableViewAndSearchBar(){
         self.tblTask.isHidden = false
@@ -62,13 +82,12 @@ final class ViewController: UIViewController {
         vwAddTask.isHidden = true
     }
     
+    
     private func hideTableViewAndSearchBar(){
         self.tblTask.isHidden = true
         resultSearchController.searchBar.isHidden = true
         vwAddTask.isHidden = false
-
     }
-    
     
     
     @objc func addNewTask(){
@@ -91,8 +110,8 @@ final class ViewController: UIViewController {
             tblTask.tableHeaderView?.backgroundColor = .clear
             return controller
         })()
-        
     }
+    
     
     //TODO: Check the fetch data logic as we should not fetch always. Also in the below code try to check of we can add the guard statement before assigning to the tempnotes.
     
@@ -124,6 +143,7 @@ final class ViewController: UIViewController {
         }
     }
     
+    
     func getDataSource(index: Int) -> [Task]?
     {
         var tempNotes : [Task]?
@@ -136,7 +156,6 @@ final class ViewController: UIViewController {
         let tempPNotes = self.dictNotes[noteType.PinnedNote]?.count ?? 0
         let tempUnPNotes = self.dictNotes[noteType.Note]?.count ?? 0
         if(tempPNotes > 0 && tempUnPNotes > 0) {
-            
             switch index {
             case 1:
                 tempNotes = self.dictNotes[noteType.Note]
@@ -145,32 +164,28 @@ final class ViewController: UIViewController {
             }
             return tempNotes
             }
-        
         if(tempPNotes > 0){
             tempNotes = self.dictNotes[noteType.PinnedNote]
             return tempNotes
-
         }
         tempNotes = self.dictNotes[noteType.Note]
         return tempNotes
     }
 }
 
+
 extension ViewController: UITableViewDelegate{
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-        
         let taskDetailVC = self.storyboard?.instantiateViewController(identifier: "AddTaskDetail") as! TaskDetailViewController
         let task = self.getDataSource(index: indexPath.section)![indexPath.row]
         taskDetailVC.taskId = Int(task.taskid)
         self.navigationController?.pushViewController(taskDetailVC, animated: true)
     }
     
+    
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        
-        
-        
+                
         let task = self.getDataSource(index: indexPath.section)![indexPath.row]
         
         let closeAction = UIContextualAction(style: .normal, title:  "Pin", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
@@ -194,8 +209,8 @@ extension ViewController: UITableViewDelegate{
             }
             success(true)
             self.fetchData()
-            self.tblTask.reloadData()
-            
+            self.animateTable()
+
         })
         
         if (task.ispinned){
@@ -209,10 +224,12 @@ extension ViewController: UITableViewDelegate{
         return UISwipeActionsConfiguration(actions: [closeAction])
     }
     
+    
     func moveTableViewCell(indexPath: IndexPath){
         let firstVisibleIndexPath = (tblTask.indexPathsForVisibleRows?.first)!
         self.tblTask.moveRow(at: indexPath, to: firstVisibleIndexPath)
     }
+    
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath)
     {
@@ -229,7 +246,7 @@ extension ViewController: UITableViewDelegate{
                 print("Error in storing the task")
             }
             fetchData()
-            self.tblTask.reloadData()
+            self.animateTable()
         }
     }
 }
@@ -250,6 +267,49 @@ extension ViewController : UITableViewDataSource{
         if(tempPNotes > 0 && tempUnNotes > 0) { return 2 }
         return 1
     }
+    
+    
+   /* func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = UIView.init(frame: CGRect.init(x: 0, y: 0, width: tableView.frame.width, height: 50))
+
+        let label = UILabel()
+        label.frame = CGRect.init(x: 5, y: 0, width: headerView.frame.width-10, height: headerView.frame.height-10)
+        label.font = UIFont(name: "Georgia Bold", size: 16.0)
+        label.textColor = UIColor.black
+        headerView.addSubview(label)
+
+        
+        var sectionName: String = ""
+        
+        if (resultSearchController.isActive) {
+            return nil
+
+        }
+        let tempPNotes = self.dictNotes[noteType.PinnedNote]?.count ?? 0
+        let tempUnNotes = self.dictNotes[noteType.Note]?.count ?? 0
+        
+        if (tempUnNotes > 0 && tempPNotes > 0){
+            switch section {
+            case 1:
+                label.text = "Recent"
+            default:
+                label.text = "Pinned"
+            }
+            return headerView
+        }
+        
+        if (tempPNotes > 0){
+            label.text = "Pinned"
+            return headerView
+        }
+        
+        if (tempUnNotes > 0){
+            label.text = "Recent"
+            return headerView
+        }
+        
+        return nil
+    }*/
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         var sectionName: String = ""
