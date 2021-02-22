@@ -12,7 +12,10 @@ enum noteType{
     case PinnedNote
 }
 
-final class ViewController: UIViewController {
+final class HomeViewController: UIViewController {
+    var homeVM : HomeViewModel = {
+        return HomeViewModel()
+    }()
     
     var pinnedCount = 0
     
@@ -41,15 +44,34 @@ final class ViewController: UIViewController {
         self.getSearchBar()
         
         lblAddTask.attributedText = AppManager.makeAttributedString(with: AppManager.AddNotes, andBoldString: "+")
+        
+        initVM()
+        
+    }
+    
+    func initVM(){
+        self.homeVM.updateDisplayUI = { [weak self] in
+            let isShow = self?.homeVM.isShow ?? false
+            
+            if (isShow){
+                self?.showTableViewAndSearchBar()
+            }
+            else{
+                self?.hideTableViewAndSearchBar()
+            }
+        }
     }
     
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
+        
         self.fetchData()
+        
         self.animateTable()
+        
         if (dictNotes.values.count > 0){
-            self.showTableViewAndSearchBar()
+            self.homeVM.isShow = true
         }
     }
 
@@ -135,7 +157,8 @@ final class ViewController: UIViewController {
                 }
             }
             else{
-                self.hideTableViewAndSearchBar()
+                //self.hideTableViewAndSearchBar()
+                self.homeVM.isShow = false
             }
         }
         catch{
@@ -174,7 +197,7 @@ final class ViewController: UIViewController {
 }
 
 
-extension ViewController: UITableViewDelegate{
+extension HomeViewController: UITableViewDelegate{
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let taskDetailVC = self.storyboard?.instantiateViewController(identifier: "AddTaskDetail") as! TaskDetailViewController
@@ -254,7 +277,7 @@ extension ViewController: UITableViewDelegate{
 
 
 
-extension ViewController : UITableViewDataSource{
+extension HomeViewController : UITableViewDataSource{
     func numberOfSections(in tableView: UITableView) -> Int {
         
         if (resultSearchController.isActive) {
@@ -366,7 +389,7 @@ extension ViewController : UITableViewDataSource{
 
 
 // Mark: Search result
-extension ViewController: UISearchResultsUpdating{
+extension HomeViewController: UISearchResultsUpdating{
     func updateSearchResults(for searchController: UISearchController) {
         self.filteredNotes.removeAll(keepingCapacity: true)
         var tmpFilteredNotes = [Task]()

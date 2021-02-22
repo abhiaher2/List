@@ -10,7 +10,7 @@
 		A30E206225CE1DDC00540B0A /* TaskTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30E206125CE1DDC00540B0A /* TaskTextView.swift */; };
 		A349681C25B4B87A0031C98A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A349681B25B4B87A0031C98A /* AppDelegate.swift */; };
 		A349681E25B4B87A0031C98A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A349681D25B4B87A0031C98A /* SceneDelegate.swift */; };
-		A349682025B4B87A0031C98A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A349681F25B4B87A0031C98A /* ViewController.swift */; };
+		A349682025B4B87A0031C98A /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A349681F25B4B87A0031C98A /* HomeViewController.swift */; };
 		A349682325B4B87A0031C98A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A349682125B4B87A0031C98A /* Main.storyboard */; };
 		A349682625B4B87A0031C98A /* WeatherApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A349682425B4B87A0031C98A /* WeatherApp.xcdatamodeld */; };
 		A349682825B4B87C0031C98A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A349682725B4B87C0031C98A /* Assets.xcassets */; };
@@ -19,6 +19,7 @@
 		A349684125B4B87C0031C98A /* ListAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A349684025B4B87C0031C98A /* ListAppUITests.swift */; };
 		A349685225B4E1C00031C98A /* TaskCustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A349685125B4E1C00031C98A /* TaskCustomCell.swift */; };
 		A349688125B518FC0031C98A /* TaskDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A349688025B518FC0031C98A /* TaskDetailViewController.swift */; };
+		A376C83D25E348470004473E /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A376C83C25E348470004473E /* HomeViewModel.swift */; };
 		A377EF1C25C0F04700AABC51 /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A377EF1B25C0F04700AABC51 /* AppManager.swift */; };
 		A381814F25D0BAD800B62D6B /* TaskTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A381814E25D0BAD800B62D6B /* TaskTextField.swift */; };
 		A3BC7A9F25BE415700679F22 /* Task+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3BC7A9D25BE415700679F22 /* Task+CoreDataClass.swift */; };
@@ -48,7 +49,7 @@
 		A349681825B4B87A0031C98A /* ListApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ListApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A349681B25B4B87A0031C98A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A349681D25B4B87A0031C98A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		A349681F25B4B87A0031C98A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		A349681F25B4B87A0031C98A /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		A349682225B4B87A0031C98A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A349682525B4B87A0031C98A /* WeatherApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = WeatherApp.xcdatamodel; sourceTree = "<group>"; };
 		A349682725B4B87C0031C98A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -62,6 +63,7 @@
 		A349684225B4B87C0031C98A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A349685125B4E1C00031C98A /* TaskCustomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCustomCell.swift; sourceTree = "<group>"; };
 		A349688025B518FC0031C98A /* TaskDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetailViewController.swift; sourceTree = "<group>"; };
+		A376C83C25E348470004473E /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		A377EF1B25C0F04700AABC51 /* AppManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppManager.swift; sourceTree = "<group>"; };
 		A381814E25D0BAD800B62D6B /* TaskTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTextField.swift; sourceTree = "<group>"; };
 		A3BC7A9D25BE415700679F22 /* Task+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -156,8 +158,9 @@
 				A381814E25D0BAD800B62D6B /* TaskTextField.swift */,
 				A30E206125CE1DDC00540B0A /* TaskTextView.swift */,
 				A3C4212825BB36FE00ED4100 /* ChooseColorViewController.swift */,
-				A349681F25B4B87A0031C98A /* ViewController.swift */,
+				A349681F25B4B87A0031C98A /* HomeViewController.swift */,
 				A377EF1B25C0F04700AABC51 /* AppManager.swift */,
+				A376C83C25E348470004473E /* HomeViewModel.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -314,9 +317,10 @@
 				A349685225B4E1C00031C98A /* TaskCustomCell.swift in Sources */,
 				A349682625B4B87A0031C98A /* WeatherApp.xcdatamodeld in Sources */,
 				A3C4212925BB36FE00ED4100 /* ChooseColorViewController.swift in Sources */,
-				A349682025B4B87A0031C98A /* ViewController.swift in Sources */,
+				A349682025B4B87A0031C98A /* HomeViewController.swift in Sources */,
 				A349681C25B4B87A0031C98A /* AppDelegate.swift in Sources */,
 				A377EF1C25C0F04700AABC51 /* AppManager.swift in Sources */,
+				A376C83D25E348470004473E /* HomeViewModel.swift in Sources */,
 				A381814F25D0BAD800B62D6B /* TaskTextField.swift in Sources */,
 				A349681E25B4B87A0031C98A /* SceneDelegate.swift in Sources */,
 				A3BC7AA025BE415700679F22 /* Task+CoreDataProperties.swift in Sources */,
