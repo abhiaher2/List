@@ -55,6 +55,7 @@ final class HomeViewController: UIViewController {
             
             if (isShow){
                 self?.showTableViewAndSearchBar()
+                self?.animateTable()
             }
             else{
                 self?.hideTableViewAndSearchBar()
@@ -66,9 +67,9 @@ final class HomeViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         
-        self.fetchData()
-        
-        self.animateTable()
+        //self.fetchData()
+        self.homeVM.fetchData()
+       // self.animateTable()
         
         if (dictNotes.values.count > 0){
             self.homeVM.isShow = true
@@ -102,6 +103,7 @@ final class HomeViewController: UIViewController {
         self.tblTask.isHidden = false
         resultSearchController.searchBar.isHidden = false
         vwAddTask.isHidden = true
+       
     }
     
     
@@ -201,7 +203,7 @@ extension HomeViewController: UITableViewDelegate{
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let taskDetailVC = self.storyboard?.instantiateViewController(identifier: "AddTaskDetail") as! TaskDetailViewController
-        let task = self.getDataSource(index: indexPath.section)![indexPath.row]
+        let task = self.homeVM.getDataSource(index: indexPath.section, isResultControllerActive: resultSearchController.isActive)![indexPath.row]
         taskDetailVC.taskId = Int(task.taskid)
         self.navigationController?.pushViewController(taskDetailVC, animated: true)
     }
@@ -209,176 +211,39 @@ extension HomeViewController: UITableViewDelegate{
     
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
                 
-        let task = self.getDataSource(index: indexPath.section)![indexPath.row]
-        
-        let closeAction = UIContextualAction(style: .normal, title:  "Pin", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
-            
-            if (task.ispinned){
-                print("OK, marked as unpinned")
-                task.ispinned = false
-                self.pinnedCount -= 1
-            }
-            else{
-                print("OK, marked as pinned")
-                task.ispinned = true
-                //  self.moveTableViewCell(indexPath: indexPath)
-                self.pinnedCount += 1
-            }
-            do{
-                try AppManager.context.save()
-            }
-            catch{
-                print("Error in storing the task")
-            }
-            success(true)
-            self.fetchData()
-            self.animateTable()
-
-        })
-        
-        if (task.ispinned){
-            closeAction.image = UIImage(systemName: "pin.slash")
-            
-        }
-        else{
-            closeAction.image = UIImage(systemName: "pin")
-        }
-        closeAction.backgroundColor = UIColor.systemGreen
-        return UISwipeActionsConfiguration(actions: [closeAction])
-    }
-    
-    
-    func moveTableViewCell(indexPath: IndexPath){
-        let firstVisibleIndexPath = (tblTask.indexPathsForVisibleRows?.first)!
-        self.tblTask.moveRow(at: indexPath, to: firstVisibleIndexPath)
+        return self.homeVM.leadingSwipeActionConfig(indexPath: indexPath, isResultControllerActive: resultSearchController.isActive )
     }
     
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath)
     {
-        
         if editingStyle == .delete {
-            
-            let notesObj = self.getDataSource(index: indexPath.section)![indexPath.row]
-            AppManager.context.delete(notesObj)
-            
-            do{
-                try AppManager.context.save()
-            }
-            catch{
-                print("Error in storing the task")
-            }
-            fetchData()
-            self.animateTable()
+            self.homeVM.deleteData(indexPath: indexPath, isResultControllerActive: resultSearchController.isActive)
         }
     }
 }
 
 
-
-
 extension HomeViewController : UITableViewDataSource{
     func numberOfSections(in tableView: UITableView) -> Int {
-        
-        if (resultSearchController.isActive) {
-            return 1
-        }
-        
-        let tempPNotes = self.dictNotes[noteType.PinnedNote]?.count ?? 0
-        let tempUnNotes = self.dictNotes[noteType.Note]?.count ?? 0
-        
-        if(tempPNotes > 0 && tempUnNotes > 0) { return 2 }
-        return 1
+        return self.homeVM.getNumberOfSection(isResultControllerActive: resultSearchController.isActive)
     }
     
     
-   /* func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let headerView = UIView.init(frame: CGRect.init(x: 0, y: 0, width: tableView.frame.width, height: 50))
-
-        let label = UILabel()
-        label.frame = CGRect.init(x: 5, y: 0, width: headerView.frame.width-10, height: headerView.frame.height-10)
-        label.font = UIFont(name: "Georgia Bold", size: 16.0)
-        label.textColor = UIColor.black
-        headerView.addSubview(label)
-
-        
-        var sectionName: String = ""
-        
-        if (resultSearchController.isActive) {
-            return nil
-
-        }
-        let tempPNotes = self.dictNotes[noteType.PinnedNote]?.count ?? 0
-        let tempUnNotes = self.dictNotes[noteType.Note]?.count ?? 0
-        
-        if (tempUnNotes > 0 && tempPNotes > 0){
-            switch section {
-            case 1:
-                label.text = "Recent"
-            default:
-                label.text = "Pinned"
-            }
-            return headerView
-        }
-        
-        if (tempPNotes > 0){
-            label.text = "Pinned"
-            return headerView
-        }
-        
-        if (tempUnNotes > 0){
-            label.text = "Recent"
-            return headerView
-        }
-        
-        return nil
-    }*/
-    
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        var sectionName: String = ""
-        
-        if (resultSearchController.isActive) {
-            return sectionName
-            
-        }
-        let tempPNotes = self.dictNotes[noteType.PinnedNote]?.count ?? 0
-        let tempUnNotes = self.dictNotes[noteType.Note]?.count ?? 0
-        
-        if (tempUnNotes > 0 && tempPNotes > 0){
-            switch section {
-            case 1:
-                sectionName = "Recent"
-            default:
-                sectionName = "Pinned"
-            }
-            return sectionName
-        }
-        
-        if (tempPNotes > 0){
-            sectionName = "Pinned"
-            return sectionName
-        }
-        
-        if (tempUnNotes > 0){
-            sectionName = "Recent"
-            return sectionName
-        }
-        
-        return sectionName
-
+        return self.homeVM.getTableViewTitle(for: section, isResultControllerActive: resultSearchController.isActive)
     }
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        guard let task =  self.getDataSource(index: section) else {
+        guard let task =  self.homeVM.getDataSource(index: section, isResultControllerActive: resultSearchController.isActive) else {
             return 0
         }
         return task.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let task = self.getDataSource(index: indexPath.section)![indexPath.row]
+        let task = self.homeVM.getDataSource(index: indexPath.section, isResultControllerActive: resultSearchController.isActive)![indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: TaskCustomCell.reuseId, for: indexPath) as! TaskCustomCell
         cell.set(taskObj: task)
         return cell
